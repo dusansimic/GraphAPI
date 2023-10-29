@@ -8,6 +8,7 @@ public class Graph {
   }
 
   private IntegerList[] neighbours;
+  private int edges;
 
   /**
    * Create a new graph with no vertices.
@@ -32,6 +33,8 @@ public class Graph {
     for (int i = 0; i < v; i++) {
       neighbours[i] = new IntegerList();
     }
+
+    edges = 0;
   }
 
   /**
@@ -44,10 +47,12 @@ public class Graph {
   public Graph(In in) throws NumberFormatException, IOException {
     this(in.readInt());
     int e = in.readInt();
+    edges = 0;
 
     for (int i = 0; i < e; i++) {
       In.Pair<Integer, Integer> edge = in.readIntPair();
       addEdge(edge.v, edge.w);
+      edges++;
     }
   }
 
@@ -66,13 +71,7 @@ public class Graph {
    * @return Number of edges
    */
   public int E() {
-    int e = 0;
-
-    for (IntegerList neighs : neighbours) {
-      e += neighs.size();
-    }
-
-    return e;
+    return edges;
   }
 
   /**
@@ -99,6 +98,8 @@ public class Graph {
     if (v < 0 || v >= neighbours.length) {
       throw new IllegalArgumentException("Vertex must be present in graph");
     }
+
+    edges -= neighbours[v].size();
 
     IntegerList[] newNeighbours = new IntegerList[neighbours.length - 1];
 
@@ -131,6 +132,7 @@ public class Graph {
 
     neighbours[v].add(w);
     neighbours[w].add(v);
+    edges++;
   }
 
   /**
@@ -147,6 +149,7 @@ public class Graph {
 
     neighbours[v].remove(w);
     neighbours[w].remove(v);
+    edges--;
   }
 
   /**
