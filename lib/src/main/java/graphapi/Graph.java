@@ -213,8 +213,13 @@ public class Graph {
    * @param v Vertex
    * @param w Vertex
    * @return True if there is a path between v and w, false otherwise
+   * @throws IllegalArgumentException if v or w is not present in the graph
    */
   public boolean hasPath(int v, int w) {
+    if (v < 0 || v >= neighbours.length || w < 0 || w >= neighbours.length) {
+      throw new IllegalArgumentException("Vertices must be present in graph");
+    }
+
     for (int x : component(v)) {
       if (x == w) {
         return true;
@@ -230,8 +235,13 @@ public class Graph {
    * @param v Vertex
    * @param w Vertex
    * @return Iterable of vertices in the path
+   * @throws IllegalArgumentException if v or w is not present in the graph
    */
   public Iterable<Integer> path(int v, int w) {
+    if (v < 0 || v >= neighbours.length || w < 0 || w >= neighbours.length) {
+      throw new IllegalArgumentException("Vertices must be present in graph");
+    }
+
     boolean[] marker = new boolean[neighbours.length];
     int[] edgeTo = new int[neighbours.length];
     int[] distTo = new int[neighbours.length];
@@ -287,6 +297,7 @@ public class Graph {
    *
    * @param v
    * @return Iterable of vertices in the component
+   * @throws IllegalArgumentException if v is not present in the graph
    */
   public Iterable<Integer> component(int v) {
     if (v < 0 || v >= neighbours.length) {
@@ -316,6 +327,7 @@ public class Graph {
    *
    * @param v
    * @return True if v is in a contour, false otherwise
+   * @throws IllegalArgumentException if v is not present in the graph
    */
   public boolean hasContours(int v) {
     if (v < 0 || v >= neighbours.length) {
@@ -331,8 +343,13 @@ public class Graph {
    *
    * @param v Vertex
    * @return True if v is in a contour, false otherwise
+   * @throws IllegalArgumentException if v is not present in the graph
    */
   public boolean dfsCountourFinder(int v) {
+    if (v < 0 || v >= neighbours.length) {
+      throw new IllegalArgumentException("Vertices must be present in graph");
+    }
+
     LinkedList<Integer> s = new LinkedList<>();
     boolean[] visited = new boolean[neighbours.length];
     visited[v] = true;
@@ -387,8 +404,13 @@ public class Graph {
    *
    * @param v
    * @return Iterable of distances from vertex v
+   * @throws IllegalArgumentException if v is not present in the graph
    */
   public Iterable<Integer> distances(int v) {
+    if (v < 0 || v >= neighbours.length) {
+      throw new IllegalArgumentException("Vertices must be present in graph");
+    }
+
     Integer[] edgeTo = new Integer[neighbours.length];
     Integer[] distTo = new Integer[neighbours.length];
 
