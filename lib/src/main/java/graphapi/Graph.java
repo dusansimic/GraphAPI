@@ -10,6 +10,16 @@ public class Graph {
   private class IntegerSet extends HashSet<Integer> {
   }
 
+  public class Edge {
+    public final int v;
+    public final int w;
+
+    public Edge(int v, int w) {
+      this.v = v;
+      this.w = w;
+    }
+  }
+
   private class Bag<T> extends HashSet<T> {
     public T pick() {
       if (isEmpty()) {
@@ -79,6 +89,94 @@ public class Graph {
       addEdge(edge.v, edge.w);
       edges++;
     }
+  }
+
+  /**
+   * Create a new graph from another graph.
+   *
+   * @param g Graph
+   * @throws IllegalArgumentException if g is null
+   */
+  public Graph(Graph g) {
+    this(g == null ? 0 : g.V());
+
+    if (g == null) {
+      throw new IllegalArgumentException("Graph cannot be null");
+    }
+
+    for (int i = 0; i < g.V(); i++) {
+      for (int w : g.adj(i)) {
+        addEdge(i, w);
+      }
+    }
+  }
+
+  /**
+   * Induce a subgraph by vertices.
+   *
+   * @param g        Graph
+   * @param vertices Vertices to keep
+   * @return Induced subgraph
+   * @throws IllegalArgumentException if vertices are not present in the graph
+   */
+  public static Graph induceByVertices(Graph g, int[] vertices) {
+    Graph newGraph = new Graph(g);
+
+    for (int i = 0; i < vertices.length; i++) {
+      if (vertices[i] < 0 || vertices[i] >= g.V()) {
+        throw new IllegalArgumentException("Vertices must be present in graph");
+      }
+      newGraph.removeVertex(vertices[i] - i);
+    }
+
+    return newGraph;
+  }
+
+  /**
+   * Induce a subgraph by edges.
+   *
+   * @param g     Graph
+   * @param edges Edges to remove
+   * @return Induced subgraph
+   * @throws IllegalArgumentException if edges are not present in the graph
+   *                                  or if edges are null
+   */
+  public static Graph induceByEdges(Graph g, Edge[] edges) {
+    Graph newGraph = new Graph(g);
+
+    for (Edge e : edges) {
+      if (e == null) {
+        throw new IllegalArgumentException("Edge cannot be null");
+      }
+
+      if (e.v < 0 || e.v >= g.V() || e.w < 0 || e.w >= g.V()) {
+        throw new IllegalArgumentException("Vertices must be present in graph");
+      }
+
+      newGraph.removeEdge(e);
+    }
+
+    return newGraph;
+  }
+
+  /**
+   * Create a k-core of a graph.
+   *
+   * @param g     Graph
+   * @param cores Array of core numbers
+   * @param k     Core number
+   * @return Induced k-core
+   */
+  public static Graph induceKCore(Graph g, int[] cores, int k) {
+    Graph newGraph = new Graph(g);
+
+    for (int i = 0; i < cores.length; i++) {
+      if (cores[i] < k) {
+        newGraph.removeVertex(i);
+      }
+    }
+
+    return newGraph;
   }
 
   /**
@@ -175,6 +273,24 @@ public class Graph {
     neighbours[v].remove(w);
     neighbours[w].remove(v);
     edges--;
+  }
+
+  /**
+   * Remove an edge.
+   *
+   * @param e Edge
+   * @throws IllegalArgumentException if e is null or if vertices are not present
+   */
+  public void removeEdge(Edge e) {
+    if (e == null) {
+      throw new IllegalArgumentException("Edge cannot be null");
+    }
+
+    if (e.v < 0 || e.v >= neighbours.length || e.w < 0 || e.w >= neighbours.length) {
+      throw new IllegalArgumentException("Vertices must be present in graph");
+    }
+
+    removeEdge(e.v, e.w);
   }
 
   /**
