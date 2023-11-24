@@ -5,11 +5,11 @@ import org.junit.Test;
 public class GraphTest {
   @Test
   public void useEmptyConstructor() {
-    Graph g = new Graph();
+    SimpleGraph g = new SimpleGraph();
   }
 
   @Test
   public void useNonEmptyConstructor() {
-    Graph g = new Graph(10);
+    SimpleGraph g = new SimpleGraph(10);
   }
 }
