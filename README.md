@@ -4,7 +4,7 @@
 > Data Structures and Algorithms 3 course on Msc. for Computer Science, Faculty
 > of Science, University of Novi Sad. The library is __UNOFFICIAL__.
 
-> **Warning**
+> [!WARNING]
 > I don't know what I'm doing with Gradle and JUnit. I don't usually work with
 > Java so I'll probably do some dumb stuff here. The algorithms and the rest of
 > the code I hope are fine.
