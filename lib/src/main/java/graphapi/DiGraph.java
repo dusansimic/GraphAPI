@@ -29,6 +29,18 @@ public class DiGraph implements Graph {
     }
   }
 
+  public DiGraph clone() {
+    DiGraph g = new DiGraph(V());
+
+    for (int v : vertices()) {
+      for (int w : adj(v)) {
+        g.addEdge(v, w);
+      }
+    }
+
+    return g;
+  }
+
   @Override
   public int V() {
     return neighbours.length;
@@ -121,5 +133,17 @@ public class DiGraph implements Graph {
   public int outdegree(int v) {
     validateVertex(v);
     return neighbours[v].size();
+  }
+
+  public DiGraph reverse() {
+    DiGraph g = new DiGraph(V());
+
+    for (int v : vertices()) {
+      for (int w : adj(v)) {
+        g.addEdge(w, v);
+      }
+    }
+
+    return g;
   }
 }

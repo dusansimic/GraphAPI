@@ -39,4 +39,14 @@ public class TransitiveClosure {
 
     return false;
   }
+
+  public DiGraph createClosureGraph(int v, int w) {
+    if (v == w) {
+      throw new IllegalArgumentException("Nodes for closure cannot be the same node");
+    }
+
+    DiGraph g = this.g.clone();
+    g.addEdge(v, w);
+    return g;
+  }
 }
