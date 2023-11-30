@@ -1,12 +1,12 @@
 package graphapi;
 
 public class UndirectedDFS {
-  private SimpleGraph g;
+  private Graph g;
   private boolean[] marked;
   private int[] edgeTo;
   private int count;
 
-  public UndirectedDFS(SimpleGraph g, int v) {
+  public UndirectedDFS(Graph g, int v) {
     this.g = g;
     marked = new boolean[g.V()];
     edgeTo = new int[g.V()];

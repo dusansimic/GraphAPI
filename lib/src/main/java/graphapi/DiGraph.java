@@ -3,7 +3,7 @@ package graphapi;
 import java.io.IOException;
 import java.util.HashSet;
 
-public class DiGraph implements Graph {
+public class DiGraph {
   private class IntegerSet extends HashSet<Integer> {
   }
 
@@ -41,27 +41,22 @@ public class DiGraph implements Graph {
     return g;
   }
 
-  @Override
   public int V() {
     return neighbours.length;
   }
 
-  @Override
   public int E() {
     return edges;
   }
 
-  @Override
   public Iterable<Integer> adj(int v) {
     return neighbours[v];
   }
 
-  @Override
   public Iterable<Integer> vertices() {
     return new IntRange(0, neighbours.length);
   }
 
-  @Override
   public void addEdge(int v, int w) {
     validateVertex(v);
     validateVertex(w);
@@ -76,7 +71,6 @@ public class DiGraph implements Graph {
     }
   }
 
-  @Override
   public boolean removeEdge(int v, int w) {
     validateVertex(v);
     validateVertex(w);
@@ -101,8 +95,8 @@ public class DiGraph implements Graph {
     return null;
   }
 
-  public SimpleGraph getSimpleGraph() {
-    SimpleGraph g = new SimpleGraph(V());
+  public Graph getSimpleGraph() {
+    Graph g = new Graph(V());
 
     for (int v : vertices()) {
       for (int w : neighbours[v]) {
@@ -113,7 +107,6 @@ public class DiGraph implements Graph {
     return g;
   }
 
-  @Override
   public int degree(int v) {
     validateVertex(v);
     return neighbours[v].size();
