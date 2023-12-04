@@ -389,7 +389,7 @@ public class Graph {
    */
   public Iterable<Iterable<Integer>> components() {
     ArrayList<Iterable<Integer>> comps = new ArrayList<>();
-    Bag<Integer> bag = new Bag<>();
+    OldBag<Integer> bag = new OldBag<>();
     for (int i = 0; i < neighbours.length; i++) {
       bag.add(i);
     }

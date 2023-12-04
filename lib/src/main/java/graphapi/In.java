@@ -16,6 +16,36 @@ public class In {
     }
   }
 
+  private class Triple<U, V, W> {
+    private final U u;
+    private final V v;
+    private final W w;
+
+    public Triple(U u, V v, W w) {
+      this.u = u;
+      this.v = v;
+      this.w = w;
+    }
+
+    public U first() {
+      return u;
+    }
+
+    public V second() {
+      return v;
+    }
+
+    public W third() {
+      return w;
+    }
+  }
+
+  public class WeightedEdgeTriple extends Triple<Integer, Integer, Double> {
+    public WeightedEdgeTriple(Integer u, Integer v, Double w) {
+      super(u, v, w);
+    }
+  }
+
   BufferedReader br;
 
   /**
@@ -49,6 +79,14 @@ public class In {
   public Pair<Integer, Integer> readIntPair() throws NumberFormatException, IOException {
     String[] line = br.readLine().split(" ");
     return new Pair<Integer, Integer>(Integer.parseInt(line[0]), Integer.parseInt(line[1]));
+  }
+
+  public WeightedEdgeTriple readWeightedEdge() throws IOException {
+    String[] line = br.readLine().split(" ");
+    return new WeightedEdgeTriple(
+        Integer.parseInt(line[0]),
+        Integer.parseInt(line[1]),
+        Double.parseDouble(line[2]));
   }
 
   /**
