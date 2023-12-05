@@ -8,6 +8,7 @@ public class DijkstraSP {
   private int start;
   private Double[] distTo;
   private WeightedEdge[] edgeTo;
+  private Condition condition;
 
   public DijkstraSP(EdgeWeightedGraph g, int u) {
     this.g = g;
@@ -18,6 +19,19 @@ public class DijkstraSP {
     for (int v : g.vertices()) {
       distTo[v] = Double.POSITIVE_INFINITY;
     }
+    find(u);
+  }
+
+  public DijkstraSP(EdgeWeightedGraph g, int u, Condition condition) {
+    this.g = g;
+    validateVertex(u);
+    start = u;
+    distTo = new Double[g.V()];
+    edgeTo = new WeightedEdge[g.V()];
+    for (int v : g.vertices()) {
+      distTo[v] = Double.POSITIVE_INFINITY;
+    }
+    this.condition = condition;
     find(u);
   }
 
@@ -45,7 +59,7 @@ public class DijkstraSP {
   private boolean relax(WeightedEdge e, int v) {
     int u = e.other(v);
     double w = e.weight();
-    if (distTo[u] > distTo[v] + w) {
+    if (distTo[u] > distTo[v] + w && (condition != null ? condition.condition(e, v) : true)) {
       distTo[u] = distTo[v] + w;
       edgeTo[u] = e;
       return true;

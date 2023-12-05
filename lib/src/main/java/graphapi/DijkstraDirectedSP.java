@@ -8,6 +8,7 @@ public class DijkstraDirectedSP {
   private int start;
   private Double[] distTo;
   private WeightedArc[] edgeTo;
+  private Condition condition;
 
   public DijkstraDirectedSP(EdgeWeightedDiGraph g, int u) {
     this.g = g;
@@ -18,6 +19,19 @@ public class DijkstraDirectedSP {
     for (int v : g.vertices()) {
       distTo[v] = Double.POSITIVE_INFINITY;
     }
+    find(u);
+  }
+
+  public DijkstraDirectedSP(EdgeWeightedDiGraph g, int u, Condition condition) {
+    this.g = g;
+    validateVertex(u);
+    start = u;
+    distTo = new Double[g.V()];
+    edgeTo = new WeightedArc[g.V()];
+    for (int v : g.vertices()) {
+      distTo[v] = Double.POSITIVE_INFINITY;
+    }
+    this.condition = condition;
     find(u);
   }
 
@@ -53,7 +67,7 @@ public class DijkstraDirectedSP {
     int v = a.from();
     int w = a.to();
     double weight = a.weight();
-    if (distTo[w] > distTo[v] + weight) {
+    if (distTo[w] > distTo[v] + weight && (condition != null ? condition.condition(a) : true)) {
       distTo[w] = distTo[v] + weight;
       edgeTo[w] = a;
       return true;
