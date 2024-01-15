@@ -1,5 +1,7 @@
 package graphapi;
 
+import java.util.function.Function;
+
 public class RWTMap<V> {
   private static final int R = 256;
   private Node<V> root;
@@ -15,10 +17,6 @@ public class RWTMap<V> {
     public Node(V value) {
       this.value = value;
     }
-  }
-
-  private interface GenericUnaryOperator<T> {
-    public T op(T x);
   }
 
   private void validateKey(String key) {
@@ -43,27 +41,27 @@ public class RWTMap<V> {
     }
 
     char c = key.charAt(d);
-    x.next[c] = put(x.next[c], key, value, d+1);
+    x.next[c] = put(x.next[c], key, value, d + 1);
     return x;
   }
 
-  public void update(String key, GenericUnaryOperator<V> operator) {
+  public void update(String key, Function<V, V> function) {
     validateKey(key);
-    root = update(root, key, operator, 0);
+    root = update(root, key, function, 0);
   }
 
-  private Node<V> update(Node<V> x, String key, GenericUnaryOperator<V> operator, int d) {
+  private Node<V> update(Node<V> x, String key, Function<V, V> function, int d) {
     if (x == null) {
       x = new Node<V>();
     }
 
     if (d == key.length()) {
-      x.value = operator.op(x.value);
+      x.value = function.apply(x.value);
       return x;
     }
 
     char c = key.charAt(d);
-    x.next[c] = update(x.next[c], key, operator, d+1);
+    x.next[c] = update(x.next[c], key, function, d + 1);
     return x;
   }
 
@@ -88,7 +86,7 @@ public class RWTMap<V> {
     }
 
     char c = key.charAt(d);
-    return get(x.next[c], key, d+1);
+    return get(x.next[c], key, d + 1);
   }
 
   public boolean contains(String key) {
@@ -124,7 +122,7 @@ public class RWTMap<V> {
     }
 
     char c = key.charAt(d);
-    x.next[c] = remove(x.next[c], key, d+1);
+    x.next[c] = remove(x.next[c], key, d + 1);
 
     if (validateLinksNull(x)) {
       return null;
