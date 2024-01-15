@@ -65,15 +65,15 @@ public abstract class IndexPQ<K extends Comparable<K>> {
       return;
     }
 
-    int newPlace;
-    if (oldKey.compareTo(key) > 0) {
-      newPlace = binSearch(0, oldPlace - 1, key, kq);
-    } else {
-      newPlace = binSearch(oldPlace + 1, kq.size() - 1, key, kq);
-    }
-
     iq.remove(oldPlace);
     kq.remove(oldPlace);
+
+    int newPlace;
+    if (oldKey.compareTo(key) > 0) {
+      newPlace = binBetweenSearch(0, oldPlace - 2, key, kq);
+    } else {
+      newPlace = binBetweenSearch(oldPlace, kq.size() - 2, key, kq);
+    }
 
     iq.add(newPlace, index);
     kq.add(newPlace, key);
@@ -97,6 +97,23 @@ public abstract class IndexPQ<K extends Comparable<K>> {
     }
 
     return -1;
+  }
+
+  private <T extends Comparable<T>> int binBetweenSearch(int l, int r, T t, List<T> ls) {
+    int m = -1, oldM = -2;
+    while (m != oldM) {
+      oldM = m;
+      m = l + (r - l) / 2;
+      if (ls.get(m).compareTo(t) == 0) {
+        return m;
+      } else if (ls.get(m).compareTo(t) < 0) {
+        l = m + 1;
+      } else {
+        r = m - 1;
+      }
+    }
+
+    return m;
   }
 
   public String toString() {
