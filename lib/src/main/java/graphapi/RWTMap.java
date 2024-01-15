@@ -8,9 +8,17 @@ public class RWTMap<V> {
     private V value;
     private Node[] next = new Node[R];
 
+    public Node() {
+      this(null);
+    }
+
     public Node(V value) {
       this.value = value;
     }
+  }
+
+  private interface GenericUnaryOperator<T> {
+    public T op(T x);
   }
 
   private void validateKey(String key) {
@@ -26,7 +34,7 @@ public class RWTMap<V> {
 
   private Node<V> put(Node<V> x, String key, V value, int d) {
     if (x == null) {
-      x = new Node<V>(value);
+      x = new Node<V>();
     }
 
     if (d == key.length()) {
@@ -36,6 +44,26 @@ public class RWTMap<V> {
 
     char c = key.charAt(d);
     x.next[c] = put(x.next[c], key, value, d+1);
+    return x;
+  }
+
+  public void update(String key, GenericUnaryOperator<V> operator) {
+    validateKey(key);
+    root = update(root, key, operator, 0);
+  }
+
+  private Node<V> update(Node<V> x, String key, GenericUnaryOperator<V> operator, int d) {
+    if (x == null) {
+      x = new Node<V>();
+    }
+
+    if (d == key.length()) {
+      x.value = operator.op(x.value);
+      return x;
+    }
+
+    char c = key.charAt(d);
+    x.next[c] = update(x.next[c], key, operator, d+1);
     return x;
   }
 

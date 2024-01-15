@@ -20,6 +20,10 @@ public class TSTMap<V> {
     }
   }
 
+  private interface GenericUnaryOperator<T> {
+    public T op(T x);
+  }
+
   private void validateKey(String key) {
     if (key == null) {
       throw new IllegalArgumentException("key cannot be null");
@@ -44,6 +48,29 @@ public class TSTMap<V> {
       x.middle = put(x.middle, key, value, d+1);
     } else {
       x.value = value;
+    }
+
+    return x;
+  }
+
+  public void update(String key, GenericUnaryOperator<V> operator) {
+    root = update(root, key, operator, 0);
+  }
+
+  private Node<V> update(Node<V> x, String key, GenericUnaryOperator<V> operator, int d) {
+    char c = key.charAt(d);
+    if (x == null) {
+      x = new Node<V>(key.charAt(d));
+    }
+
+    if (c < x.c) {
+      x.left = update(x.left, key, operator, d);
+    } else if (c > x.c) {
+      x.right = update(x.right, key, operator, d);
+    } else if (d < key.length() - 1) {
+      x.middle = update(x.middle, key, operator, d+1);
+    } else {
+      x.value = operator.op(x.value);
     }
 
     return x;
