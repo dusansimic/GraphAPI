@@ -101,4 +101,31 @@ public class TSTMap<V> {
   public boolean contains(String key) {
     return get(key) != null;
   }
+
+  public void remove(String key) {
+    validateKey(key);
+    root = remove(root, key, 0);
+  }
+
+  private Node<V> remove(Node<V> x, String key, int d) {
+    if (x == null) {
+      return null;
+    }
+
+    char c = key.charAt(d);
+
+    if (c < x.c) {
+      x.left = remove(x.left, key, d);
+    } else if (c > x.c) {
+      x.right = remove(x.right, key, d);
+    } else if (d < key.length() - 1) {
+      x.middle = remove(x.middle, key, d + 1);
+    }
+
+    if (x.left == null && x.middle == null && x.right == null) {
+      return null;
+    } else {
+      return x;
+    }
+  }
 }
