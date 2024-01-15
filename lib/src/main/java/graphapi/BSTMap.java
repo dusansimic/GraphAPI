@@ -1,16 +1,17 @@
 package graphapi;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
-import java.util.concurrent.LinkedBlockingDeque;
 
-import org.checkerframework.checker.units.qual.t;
-
-public class BST<K extends Comparable<K>, V> implements Map<K, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map<K, V> {
 
   private static class Node<K extends Comparable<K>, V> implements Entry<K, V> {
     private K key;
@@ -55,10 +56,16 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
 
   private Node<K, V> root;
   private int size;
+  private Comparator<K> comparator;
 
-  public BST() {
+  public BSTMap() {
+    this(Comparator.naturalOrder());
+  }
+
+  public BSTMap(Comparator<K> comparator) {
     root = null;
     size = 0;
+    this.comparator = comparator;
   }
 
   @Override
@@ -93,7 +100,7 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
     Node<K, V> current = root;
 
     while (current != null && !current.key.equals(k)) {
-      current = current.key.compareTo(k) > 0 ? current.left : current.right;
+      current = comparator.compare(current.key, k) > 0 ? current.left : current.right;
     }
 
     return current != null;
@@ -131,7 +138,7 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
     Node<K, V> current = root;
 
     while (current != null && !current.key.equals(k)) {
-      current = current.key.compareTo(k) > 0 ? current.left : current.right;
+      current = comparator.compare(current.key, k) > 0 ? current.left : current.right;
     }
 
     return current != null ? current.value : null;
@@ -152,11 +159,11 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
     Node<K, V> current = root;
 
     while (true) {
-      if (current.key.compareTo(k) == 0) {
+      if (comparator.compare(current.key, k) == 0) {
         oldValue = current.value;
         current.value = v;
         return oldValue;
-      } else if (current.key.compareTo(k) < 0) {
+      } else if (comparator.compare(current.key, k) < 0) {
         if (current.right == null) {
           current.right = new Node<K, V>(k, v);
           size++;
@@ -183,9 +190,9 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
     Node<K, V> current = root;
 
     while (current != null) {
-      if (current.key.compareTo(k) == 0) {
+      if (comparator.compare(current.key, k) == 0) {
         break;
-      } else if (current.key.compareTo(k) < 0) {
+      } else if (comparator.compare(current.key, k) < 0) {
         previous = current;
         current = current.right;
         previousLeft = false;
@@ -297,6 +304,90 @@ public class BST<K extends Comparable<K>, V> implements Map<K, V> {
     }
 
     return entries;
+  }
+
+  public K minKey() {
+    if (root == null) {
+      return null;
+    }
+
+    Node<K, V> current = root;
+
+    while (current.left != null) {
+      current = current.left;
+    }
+
+    return current.key;
+  }
+
+  public K maxKey() {
+    if (root == null) {
+      return null;
+    }
+
+    Node<K, V> current = root;
+
+    while (current.right != null) {
+      current = current.right;
+    }
+
+    return current.key;
+  }
+
+  public List<K> keysInRange(K a, K b) {
+    List<K> list = new LinkedList<>();
+
+    Deque<Node<K, V>> s = new ArrayDeque<>();
+    s.push(root);
+
+    while (!s.isEmpty()) {
+      Node<K, V> current = s.pop();
+      if (current == null) {
+        continue;
+      }
+
+      if (comparator.compare(current.key, a) >= 0 && comparator.compare(current.key, b) <= 0) {
+        list.add(current.key);
+      }
+      s.push(current.left);
+      s.push(current.right);
+    }
+
+    return list;
+  }
+
+  public int height() {
+    if (root == null) {
+      return 0;
+    }
+
+    int maxHeight = 0;
+
+    Deque<Node<K, V>> sn = new ArrayDeque<>();
+    Deque<Integer> sh = new ArrayDeque<>();
+    sn.push(root);
+    sh.push(1);
+
+    while (!sn.isEmpty()) {
+      Node<K, V> current = sn.pop();
+      int height = sh.pop();
+
+      if (current == null) {
+        continue;
+      }
+
+      if (current.left == null && current.right == null && height > maxHeight) {
+        maxHeight = height;
+        continue;
+      }
+
+      sn.push(current.left);
+      sh.push(height + 1);
+      sn.push(current.right);
+      sh.push(height + 1);
+    }
+
+    return maxHeight;
   }
 
 }
