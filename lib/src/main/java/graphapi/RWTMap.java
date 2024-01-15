@@ -1,6 +1,6 @@
 package graphapi;
 
-public class RWTSet<V> {
+public class RWTMap<V> {
   private static final int R = 256;
   private Node<V> root;
 

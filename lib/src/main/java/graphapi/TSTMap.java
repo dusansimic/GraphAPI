@@ -1,6 +1,6 @@
 package graphapi;
 
-public class TSTSet<V> {
+public class TSTMap<V> {
   private Node<V> root;
 
   private static class Node<V> {
