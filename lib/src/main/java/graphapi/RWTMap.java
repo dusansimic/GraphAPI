@@ -1,5 +1,10 @@
 package graphapi;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.function.Function;
 
 public class RWTMap<V> {
@@ -129,5 +134,92 @@ public class RWTMap<V> {
     } else {
       return x;
     }
+  }
+
+  public Iterable<String> keys() {
+    Queue<String> q = new LinkedList<>();
+    StringBuilder sb = new StringBuilder();
+    collect(root, sb, q);
+    return q;
+  }
+
+  private void collect(Node<V> x, StringBuilder prefix, Queue<String> q) {
+    if (x == null) {
+      return;
+    }
+
+    if (x.value != null) {
+      q.add(prefix.toString());
+    }
+
+    for (char c = 0; c < R; c++) {
+      prefix.append(c);
+      collect(x.next[c], prefix, q);
+      prefix.deleteCharAt(prefix.length() - 1);
+    }
+  }
+
+  public Iterable<String> keysWithPrefix(String prefix) {
+    Queue<String> q = new LinkedList<>();
+    Node<V> x = get(root, prefix, 0);
+    StringBuilder sb = new StringBuilder(prefix);
+    collect(x, sb, q);
+    return q;
+  }
+
+  public Iterable<String> keysThatMatch(String pattern) {
+    Queue<String> q = new LinkedList<>();
+    StringBuilder sb = new StringBuilder();
+    collect(root, sb, pattern, q);
+    return q;
+  }
+
+  private void collect(Node<V> x, StringBuilder prefix, String pattern, Queue<String> q) {
+    if (x == null) {
+      return;
+    }
+
+    int d = prefix.length();
+
+    if (d == pattern.length()) {
+      if (x.value != null) {
+        q.add(prefix.toString());
+      } else {
+        return;
+      }
+    }
+
+    char next = pattern.charAt(d);
+
+    for (char c = 0; c < R; c++) {
+      if (next == '.' || next == c) {
+        prefix.append(c);
+        collect(x.next[c], prefix, pattern, q);
+        prefix.deleteCharAt(prefix.length() - 1);
+      }
+    }
+  }
+
+  public String longestPrefixOf(String query) {
+    int length = search(root, query, 0, 0);
+    return query.substring(0, length);
+  }
+
+  private int search(Node<V> x, String query, int d, int length) {
+    if (x == null) {
+      return length;
+    }
+
+    if (x.value != null) {
+      length = d;
+    }
+
+    if (d == query.length()) {
+      return length;
+    }
+
+    char c = query.charAt(d);
+
+    return search(x.next[c], query, d + 1, length);
   }
 }
